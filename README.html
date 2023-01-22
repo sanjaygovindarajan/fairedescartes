@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome file</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="introduction">Introduction</h1>
+<p>This is a library to make an interactive Javascript-based SVG map within minutes. It can make a choropleth map from a Shapefile, add an infobox to the map, change map data, and more.</p>
+<h2 id="requirements">Requirements</h2>
+<p>The PySHP library is required in order for the library to work. A shapefile of the region to be mapped is also required. Also, adding data is also required.</p>
+<h2 id="basic-concepts">Basic concepts</h2>
+<p>All classes are based off dictionaries so it can be easily converted to JSON. The main classes are the Infobox class, the SVGMap class, the Coordinates class, and the MapData class.</p>
+<h1 id="creating-a-map-from-a-shapefile">Creating a map from a shapefile</h1>
+<p>Shapefiles are read based on the PySHP library and then converted to a format that can be used to make an SVG map. Use the Coordinates class to load a map. Numbers will be printed showing the progress loading as it may take a while.</p>
+<h2 id="parameters">Parameters</h2>
+<p>The only required parameters are the file and the recordId. There are also many optional parameters.</p>
+<h3 id="file">File</h3>
+<p>The location of the file to be read.</p>
+<h3 id="recordid">recordId</h3>
+<p>The column number of the shape record. Columns start at 0. This will be used to match shapes with data. Only one is permitted.</p>
+<h3 id="res">res</h3>
+<p>The resolution. By default this is 10, meaning that points are rounded to 1/10 of a unit of latitude and longitude. Lower resolutions load faster but higher are more accurate.</p>
+<h3 id="isl">isl</h3>
+<p>Used to exclude small islands or shapes. By default only shapes with a single coordinate are excluded. This value is an integer corresponding to the highest number of coordinates a shape could have and be excluded.</p>
+<h3 id="countries">countries</h3>
+<p>Chooses which shapes to include based on shape records. Takes a list. Leaving blank or entering a blank list will include all shapes or countries.</p>
+<h3 id="zoom-and-translate">zoom and translate</h3>
+<p>These are two important parameters that allow only a certain portion of the map to be shown.</p>
+<h4 id="zoom">zoom</h4>
+<p>This chooses what proportion of the map should be shown. It is by default 1. For example, if it is 2 it will show only half of the latitude values and half of the longitude values so only 1/4 of the map.</p>
+<h4 id="translate">translate</h4>
+<p>After zooming in, allows choosing which part of the map to see. Accepts a list of two values that correspond to the coordinates fo the bottom-left corner that should be shown. Note that these are always positive, so for the latitude add 90 and the longitude add 180. Longitude comes first.</p>
+<h3 id="height-and-width">height and width</h3>
+<p>The height and width of the map as it appears on the screen.</p>
+<h2 id="understanding-the-dictionary">Understanding the dictionary</h2>
+<p><code>['data']</code> lists all the shapes</p>
+<p><code>['data'][32]['Points']</code> lists the points of the 33rd shape.</p>
+<p><code>['data'][32]['Points'][64][0]</code> is the longitude of the 65th point of the 33rd shape.</p>
+<p><code>['data'][32]['Points'][64][1]</code> is the latitude of the 65th point of the 33rd shape.</p>
+<p><code>['data'][32]['Country']</code> is the Shape Record of the 33rd shape. Spaces are removed.</p>
+<p><code>['metadata']['scale']</code> is the zoom parameter.</p>
+<p><code>['metadata']['translate']</code> is the translate parameter.</p>
+<p><code>['metadata']['height']</code> is the height parameter.</p>
+<p><code>['metadata']['width']</code> is the width parameter.</p>
+<p><code>['recordList']</code> is a list of all the shape records used. Spaces are removed.</p>
+<p>These can all be modified at any time.</p>
+<h1 id="importing-data">Importing data</h1>
+<p>The MapData class is responsible for managing data. The only two parameters are the dictionary with the data and the territory list.</p>
+<h2 id="basic-format">Basic format</h2>
+<p>The data must be a dictionary. The dictionary must contain only several lists whose values correspond to each other (for example, the 32nd value of one list must be for the same territory as the 32nd value of another.</p>
+<h2 id="the-territory-list">The territory list</h2>
+<p>The parameter tlist is by default territory_list. This shows which list is the list of territories that correspond to the shape records in the shapefile. They do not have to be in the same order.</p>
+<h2 id="understanding-the-dictionary-1">Understanding the dictionary</h2>
+<p><code>['data']</code> is the original dictionary.</p>
+<p><code>['territory_list']</code> is the list of territories. It is still located in the original dictionary but also additionally located here.</p>
+<h1 id="making-an-infobox">Making an infobox</h1>
+<p>The Infobox class has no parameters.</p>
+<h2 id="adding-text">Adding text</h2>
+<p>Use the addText() method. This does have many parameters.</p>
+<h3 id="the-text-parameter">The text parameter</h3>
+<p>This parameter is the text itself.</p>
+<h3 id="adding-a-formula-based-on-data">Adding a formula based on data</h3>
+<p>Repace the text with a formula in the format <code>data["data"]["data"][DATASET][c]</code>, whare DATASET should be replaced with the list name from the MapData class that you wish to access and c is the territory the infobox is for. Of course c will vary, so just leave it as <code>c</code> in the formula. Any javascript formula will work.</p>
+<p>Next, add the optional parameter <code>textType = 'formula'</code> to show it is a formula.</p>
+<h3 id="the-line-parameter">The line parameter</h3>
+<p>Specifies which line of the infobox it should appear on, starting with line 0. By default it uses the line of the previous text added. (If the previous text is removed it will not be adjusted.)</p>
+<h3 id="textid">textId</h3>
+<p>Assigns a unique ID to each section of text. By default it is simply a number (although a string).</p>
+<h3 id="font-size-r-g-and-b">font, size, r, g, and b</h3>
+<p>r, g, and b determine the color. They are by default all 0.</p>
+<p>font determines the font. By default calibri.</p>
+<p>size determines the font size. By default 15.</p>
+<h2 id="removing-text">Removing text</h2>
+<p>Removes text. Only parameter is the textId. If it is an integer it will delete that list item from the list of text, which doesn’t always correspond to the default textId number.</p>
+<h2 id="understanding-the-dictionary-2">Understanding the dictionary</h2>
+<p><code>['style']['border']['stroke-width']</code> is the width of the border of the infobox.</p>
+<p><code>['style']['border']['color']['r']</code> is the red in the border color. Same applies with green and blue.</p>
+<p><code>['style']['color']</code> is the fill color. It works the same way as the border color.</p>
+<p><code>['style']['text']</code> is a list with style information for each piece of text. The list contains a style dictionary for each piece of text with items based on the parameters in the addText function.</p>
+<p><code>['text']</code> is a dictionary a lot like <code>['style']['text']</code> but contains the text itself <code>['text']['text']</code>, the textId <code>['text']['id']</code>, and whether it is <code>text</code> or a 	<code>formula</code> <code>['text']['type']</code>.</p>
+<h1 id="putting-it-all-together">Putting it all together</h1>
+<h2 id="creating-an-svgmap-object">Creating an SVGMap object</h2>
+<p>Requires two parameters: a MapData object and a Coordinates object.</p>
+<h3 id="adding-an-infobox">Adding an infobox</h3>
+<p>Use <code>['infobox'] = infobox_object</code></p>
+<h2 id="coloring-the-map">Coloring the map</h2>
+<p>Use <code>['choropleth']['source']</code> to denote the list name containing the data to color the map.</p>
+<h3 id="choosing-colors">Choosing colors</h3>
+<p>Use <code>['choropleth']['colors']['r']</code> for the red. Green and blue are chosen similarly. This should be a list with only two items: The first the red at the lowest point in the dataset and the second the red at the highest.</p>
+<h2 id="making-it-interactive">Making it interactive</h2>
+<p>Three inputs are supported:</p>
+<p><code>['inputs']['onMouseOut']</code></p>
+<p><code>['inputs']['onHover']</code></p>
+<p><code>['inputs']['onClick']</code></p>
+<p>This should be Javascript code.</p>
+<h3 id="accessing-shape-specific-information">Accessing shape-specific information</h3>
+<p><code>[COUNTRY]</code> will be replaced with the index of the country in the territory_list.</p>
+<h3 id="showing-and-hiding-the-infobox">Showing and hiding the infobox</h3>
+<p>Use <code>showInfobox([COUNTRY]);</code> and <code>hideInfobox([COUNTRY]);</code> to show and hide the infobox.</p>
+<h3 id="reloading-and-recoloring-the-map">Reloading and recoloring the map</h3>
+<p>Use <code>loadMap();</code> to completely reload the map.</p>
+<p>Use <code>colorMap();</code> to just re-color the map.</p>
+<p>This is useful if inputs result in changing the data.</p>
+<hr>
+<p>All of the functions above can be accessed through external scripts.</p>
+<hr>
+<h1 id="saving-and-loading-the-map">Saving and loading the map</h1>
+<p>The SVGMap class has a <code>returnCode()</code> method that returns javascript code for loading the map.</p>
+<h2 id="loading-the-map">Loading the map</h2>
+<p>Use the accompanying HTML and Javascript file to load the map.</p>
+</div>
+</body>
+
+</html>
